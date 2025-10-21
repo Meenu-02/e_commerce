@@ -10,7 +10,7 @@ urlpatterns = [
     # path('login_page',views.login_page,name='login_page'),
     path('seller_add',views.seller_add,name='seller_add'),
     path('customer_add',views.customer_add,name='customer_add'),
-    path('cus_reg',views.cus_reg,name='cus_reg'),
+    #path('cus_reg',views.cus_reg,name='cus_reg'),
     path('customer',views.customer_base,name='customer'),
     path('seller',views.seller_base,name='seller'),
     path('admin',views.admin_base,name='admin'),
@@ -24,16 +24,19 @@ urlpatterns = [
     path('update_customer/<int:id>/',views.update_customer,name='update_customer'),
 path('update_seller/<int:id>/',views.update_seller,name='update_seller'),
     path('seller_form',views.seller_form_upload,name='seller_form'),
+
     #seller
     path('seller_product',seller_views.seller_product,name='seller_product'),
     path('sell_prod_up/<int:id>/',seller_views.update_product,name='sell_prod_up'),
     path('sell_prod_del/<int:id>/',seller_views.delete_product,name='sell_prod_del'),
     path('sell_profile',seller_views.profile,name='sell_profile'),
     path('sell_prof_up/<int:id>',seller_views.update_profile,name='sell_prof_up'),
+    path('orderlist',seller_views.order_seller,name='orderlist'),
 
 
     #admin
     path('products',admin_views.products_admin,name='products'),
+    path('display',admin_views.display,name='display'),
 
 
     #customer
@@ -46,7 +49,11 @@ path('description/<int:pk>/', customer_views.description, name='description'),
     path('cartremove/<int:id>/',customer_views.cart_remove,name='cartremove'),
     path('buy/<int:id>/',customer_views.buy_product,name='buy'),
     path('order',customer_views.order_list,name='order'),
-    path('cartbuy/<int:id>/',customer_views.cart_buy,name='cartbuy')
+    path('cartbuy/<int:id>/',customer_views.cart_buy,name='cartbuy'),
+
+
+#logout
+    path('logout_view',views.logout_view,name='logout_view')
 
 
 

@@ -1,11 +1,12 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 
 from ec_app.filters import ProductFilter
 from ec_app.forms import CustomerRegister, BuyForm
-from ec_app.models import Product_Add, Customer, Cart, Buy
+from ec_app.models import Product_Add, Customer, Cart, Buy, Seller
 
-
+@login_required(login_url='login_view')
 def products_customer(request):
     data=Product_Add.objects.all()
     productFilter = ProductFilter(request.GET,queryset=data)
@@ -17,17 +18,21 @@ def products_customer(request):
     return render(request,'customer/products.html',context)
 
 
-
+@login_required(login_url='login_view')
 def description(request, pk):
     product = Product_Add.objects.get(pk=pk)
     #product = get_object_or_404(Product_Add, pk=pk)
     return render(request, 'customer/description.html', {'product': product})
 
+
+@login_required(login_url='login_view')
 def profile(request):
     cus = request.user
     data=Customer.objects.get(user=cus)
     return render(request,'customer/profile.html',{'profile': data})
 
+
+@login_required(login_url='login_view')
 def profile_update(request,id):
     data=Customer.objects.get(id=id)
     form=CustomerRegister(instance=data)
@@ -41,6 +46,8 @@ def profile_update(request,id):
 
     return render(request,'customer/profile_update.html',{'update':form})
 
+
+@login_required(login_url='login_view')
 def cart_item(request,id):
     cus=request.user
     products= Product_Add.objects.all()
@@ -64,17 +71,23 @@ def cart_item(request,id):
 
     return render(request,'customer/products.html',{'product':products})
 
+
+@login_required(login_url='login_view')
 def cart_view(request):
     cus= request.user
     person=Customer.objects.get(user=cus)#only a data is stored
     data=Cart.objects.filter(user=person)  #a list of data is stored
     return render(request,'customer/cart.html',{'cart':data})
 
+
+@login_required(login_url='login_view')
 def cart_remove(request,id):
     data=Cart.objects.get(id=id)
     data.delete()
     return redirect('cartitem')
 
+
+@login_required(login_url='login_view')
 def buy_product(request,id):
     data=request.user
     customer_data = Customer.objects.get(user=data)
@@ -108,6 +121,7 @@ def buy_product(request,id):
     return render(request,'customer/buyproduct.html',{'form':details})
 
 
+@login_required(login_url='login_view')
 def order_list(request):
     cus = request.user
     person = Customer.objects.get(user=cus)
@@ -115,6 +129,8 @@ def order_list(request):
     data=Buy.objects.filter(user=person)
     return render(request,'customer/order_list.html',{'order':data})
 
+
+@login_required(login_url='login_view')
 def cart_buy(request,id):
     data = Cart.objects.get(id=id)
     customer = data.user
@@ -144,5 +160,4 @@ def cart_buy(request,id):
 
     return render(request,'customer/buyproduct.html',{'form':details})
 
-def order_seller(request):
 

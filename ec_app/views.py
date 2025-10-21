@@ -1,5 +1,6 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 from django.shortcuts import render, redirect
 
@@ -64,8 +65,8 @@ def customer_add(request):
             return redirect('login_view')
     return render(request,'customer_registration.html',{'form1':form1,'form2':form2})
 
-def cus_reg(request):
-    return  render(request,'cus_reg.html')
+# def cus_reg(request):
+#     return  render(request,'cus_reg.html')
 
 
 def customer_base(request):
@@ -89,39 +90,41 @@ def login_view(request):
         if user is not None:
             login(request,user)
             if user.is_staff:
-                return redirect('admin')  #url name
+                return redirect('products')  #url name
             elif user.is_customer:
                 return redirect('cus_prod')
             elif user.is_seller:
-                return redirect('seller')
+                return redirect('seller_form')
 
         else:
             messages.info(request,'Invalid Credentials')
 
     return render(request,'login.html')
 
-
+@login_required(login_url='login_view')
 def view_customer(request):
     data= Customer.objects.all()
     return render(request,'admin/customer_view.html',{'view_customer':data})
 
+@login_required(login_url='login_view')
 def view_seller(request):
     data= Seller.objects.all()
     return render(request,'admin/seller_view.html',{'view_seller':data})
 
-
+@login_required(login_url='login_view')
 def delete_customer(request,id):
     data=Customer.objects.get(id=id)
 
     data.delete()
     return redirect('customer_view')  #give url(name) for redirect
 
+@login_required(login_url='login_view')
 def delete_seller(request,id):
     data=Seller.objects.get(id=id)
     data.delete()
     return redirect('seller_view')
 
-
+@login_required(login_url='login_view')
 def update_customer(request,id):
     data=Customer.objects.get(id=id)
     form=CustomerRegister(instance=data) #form will be with data
@@ -134,6 +137,8 @@ def update_customer(request,id):
              return  redirect('customer_view')
     return render(request,'admin/customer_update.html',{'update':form})
 
+
+@login_required(login_url='login_view')
 def update_seller(request,id):
     data=Seller.objects.get(id=id)
     form=SellerRegister(instance=data) #form will be with data
@@ -147,6 +152,8 @@ def update_seller(request,id):
     return render(request,'admin/seller_update.html',{'update':form})
 
 
+
+@login_required(login_url='login_view')     #will not goes to page without login
 def seller_form_upload(request):
 
     data=request.user
@@ -183,3 +190,8 @@ def seller_form_upload(request):
 # def products_customer(request):
 #     data=Product_Add.objects.all()
 #     return render(request,'customer/products.html',{'product':data})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')
